@@ -4,7 +4,7 @@
 
 import pygame as pg
 import random 
-from Settings import *
+from Settings2 import *
 from Sprites import *
 
 class Game:
@@ -20,11 +20,11 @@ class Game:
 
     def new(self):
         # Start new game
+        self.menu_running = False
+        self.all_sprites = pg.sprite.LayeredUpdates()
+        self.player_characters = pg.sprite.Group()
         self.pointer = Pointer(self, 20, 15)
         self.player = Player_Character(self, 20, 20)
-        self.all_sprites = pg.sprite.Group()
-        self.all_sprites.add(self.player)
-        self.all_sprites.add(self.pointer)
         self.run()
 
     def run(self):
@@ -39,8 +39,9 @@ class Game:
 
     def update(self):
         # Game loop - Update
-        self.all_sprites.update()
-    
+        self.all_sprites.update() 
+        self.selection_check()  
+
     def events(self):
         # Game loop - Events
         for event in pg.event.get():
@@ -64,8 +65,8 @@ class Game:
     def draw(self):
         # Game loop - Draw
         self.screen.fill(BLACK)
-        self.all_sprites.draw(self.screen)
         self.draw_grid()
+        self.all_sprites.draw(self.screen)
         pg.display.flip()
 
     def draw_grid(self):
@@ -76,6 +77,26 @@ class Game:
             pg.draw.line(self.screen, GREY, (0, y), (WIDTH, y))
         pg.draw.line(self.screen, GREY, (WIDTH, 0), (WIDTH , HEIGHT))
         pg.draw.line(self.screen, GREY, (0, HEIGHT), (WIDTH, HEIGHT))
+
+### GAME FUNCTIONS
+
+    def selection_check(self):
+        select = pg.sprite.spritecollide(self.pointer, self.player_characters, False, collided = None)
+        if select:
+            self.pointer.image.fill(RED)
+            if self.menu_running is not True:
+                self.menu = Menu(self, self.pointer.x / TILE_SIZE + 1.5, self.pointer.y / TILE_SIZE + 0.5)
+                self.menu_running = True
+        else:
+            self.pointer.image.fill(GREEN)
+            if self.menu_running is True:
+                self.menu_running = False
+
+    def menu_run(self):
+        self.menu = Menu(self, self.pointer.x + 1, self.pointer.y)
+        self.all_sprites.add(self.menu)
+
+###
 
     def show_start_screen(self):
         # Game splash/start screen
