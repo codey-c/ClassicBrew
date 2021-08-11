@@ -83,7 +83,7 @@ class Game:
     def selection_check(self):
         select = pg.sprite.spritecollide(self.pointer, self.player_characters, False, collided = None)
         if select:
-            self.pointer.image.fill(RED)
+            self.pointer.image.fill(YELLOW)
             if self.menu_running is not True:
                 self.menu = Menu(self, self.pointer.x / TILE_SIZE + 1.5, self.pointer.y / TILE_SIZE + 0.5)
                 self.menu_running = True

@@ -13,8 +13,8 @@ GRID_HEIGHT = 720 / TILE_SIZE # 30
 
 # Game Properties
 MENU_LAYER = 3
-POINTER_LAYER = 2 
-PLAYER_LAYER = 1
+POINTER_LAYER = 1 
+PLAYER_LAYER = 2
 
 # Colors
 WHITE = pg.Color('white')
