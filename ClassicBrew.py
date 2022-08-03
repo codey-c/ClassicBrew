@@ -2,8 +2,12 @@
 ## CLASSIC BREW ###
 ###################
 
+# This module is the main game loop for ClassicBrew.  It runs the main loop, calling 
+# states update functions to achieve game functionality. 
+
 import pygame
-import random 
+import random
+import BaseGameplay 
 from Settings2 import *
 from Sprites import *
 from math import sqrt
@@ -15,21 +19,21 @@ class Game:
         self.running = True
         pygame.init()
         pygame.mixer.init()
-        pygame.key.set_repeat(80, 80)
+        pygame.key.set_repeat(150, 150)
         self.screen = pygame.display.set_mode((WIDTH +1 , HEIGHT + 1))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-        self.states = {"title": Title.Title(self)}
-        self.current_state = "title"
+        self.states = {"Title": Title.Title(self), "BaseGameplay": BaseGameplay.BaseGameplay(self)}
+        self.current_state = "Title"
 
     def new(self):
-        # Start new game
-        self.menu_running = False
+        # Start new game. 'Initiates' each game by creating instances of all 
+        # objects needed to run game. 
+        self.menu_running = False   # TD: change hover-menu into an object(sprite?)
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_characters = pygame.sprite.Group()
         self.pointer = Pointer(self, 20, 15)
         self.player = Player_Character(self, 20, 20)
-        self.run()
 
     def run(self):
         # Game loop 
@@ -119,7 +123,7 @@ class Game:
 g = Game()
 g.show_start_screen()
 while g.running:
-    g.new()
+    g.run()
     g.show_go_screen()
 
 pygame.quit()

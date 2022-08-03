@@ -2,35 +2,34 @@
 from State import State
 import Settings2 
 import pygame
+import GameFunctions
 
 class Title(State):
     def __init__ (self, game):
         State.__init__(self, game)
+        self.image = pygame.Surface((200,200))
+        self.rect = self.image.get_rect()
 
     def events(self):
         for event in pygame.event.get():
             # Check for closing window
-            if event.type == pygame.QUIT:
-                if self.playing:
-                    self.playing = False
-                self.running = False
+            GameFunctions.check_quit(event, self.game)
+            # Check for selection 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    self.game.new()
+                    print(self.game.pointer)
+                    self.switch_state("BaseGameplay")
 
     def update(self):
         pass
     
-    
-    def draw_text(surface, color, text, size, x, y):
-    # x and y are in pixels for this function
-        font_name = pygame.font.match_font('arial')
-        font = pygame.font.Font(font_name, size)
-        text_surface = font.render(text, True, color)
-        text_rect = text_surface.get_rect()
-        text_rect.x = x
-        text_rect.y = y
-        surface.blit(text_surface, text_rect)
-
     def draw(self):
-        self.game.screen.fill(Settings2.GREEN)
-        pygame.display.flip()
-    
+        # self.game.screen.fill(Settings2.GREEN)
+        # self.game.screen.blit(self.image, (50,50))
+        GameFunctions.draw_text(self.game.screen, Settings2.WHITE, "ClassicBrew", 55, (Settings2.WIDTH/2) - 150,  (Settings2.HEIGHT/2)- 95)
+        GameFunctions.draw_text(self.game.screen, Settings2.WHITE, "\u2022 Press '1' to start new game", 25, (Settings2.WIDTH/2) - 150,  (Settings2.HEIGHT/2)- 15)
+        GameFunctions.draw_text(self.game.screen, Settings2.WHITE, "\u2022 Press 'Esc' at anytime time ", 25, (Settings2.WIDTH/2) - 150,  (Settings2.HEIGHT/2) + 25)
+        GameFunctions.draw_text(self.game.screen, Settings2.WHITE, "   to return to main menu", 25, (Settings2.WIDTH/2) - 150,  (Settings2.HEIGHT/2) + 55)
 
+        pygame.display.flip()
