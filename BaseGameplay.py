@@ -3,6 +3,7 @@ from State import State
 import Settings2 
 import pygame
 import GameFunctions
+from Sprites import Menu
 
 class BaseGameplay(State):
     def __init__(self,game):
@@ -29,11 +30,14 @@ class BaseGameplay(State):
 
     def update(self):
         self.game.all_sprites.update() 
-        self.game.selection_check() 
+        self.game.menu.update()
+        # self.game.selection_check()       #this is legacy and inefficient 
+
 
     def draw(self):
         # Gameplay loop
         self.game.screen.fill(Settings2.BLACK)
         GameFunctions.draw_grid(self.game)
         self.game.all_sprites.draw(self.game.screen)
+        self.game.menu.draw()
         pygame.display.flip()

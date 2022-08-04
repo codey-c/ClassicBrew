@@ -3,6 +3,7 @@ class Character(object):
     """Cookie cutter for polymorphing charater classes"""
 
     def __init__(self, health=9, speed=8, offense=6, defense=4, scope=1):
+        self.class_name = "Character"
         self.__health = health
         self.__speed = speed
         self.__offense = offense
@@ -76,6 +77,7 @@ class Footman(Character):
 
     def __init__(self):
         Character.__init__(self)
+        self.class_name = "Footman"
 
     def __repr__(self):
         return 'Characters Footman Class'

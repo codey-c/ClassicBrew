@@ -66,33 +66,41 @@ class Player_Character(pygame.sprite.Sprite, Character):
             return False
 
 class Menu(pygame.sprite.Sprite):
-    def __init__(self, game, player, x, y):
+    def __init__(self, game, x, y):
         self._layer = MENU_LAYER
-        self.groups = game.all_sprites
-        pygame.sprite.Sprite.__init__(self, self.groups)
+        # self.groups = game.all_sprites
+        # pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.player = player
+        # self.player = player
         self.x = x
         self.y = y 
         self.rect = pygame.Rect(self.x * TILE_SIZE, self.y * TILE_SIZE, TILE_SIZE * 6, TILE_SIZE * 4)
-        self.image = pygame.Surface((TILE_SIZE * 6, TILE_SIZE * 4))
+        self.image = pygame.Surface((TILE_SIZE * 4.25, TILE_SIZE * 4.25))
         self.image.fill(GREY)
 
-    def menu_selection1(self):
-        # Menu displayed while hovering over player character
-        draw_text(self.image, BLACK, '1) Move', 16, 10, 10)
-        draw_text(self.image, BLACK, '2) Attack', 16, 10, 30)
-        draw_text(self.image, BLACK, '3) Select other', 16, 10, 50)
-        # Check for events
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
-                    self.game.move_selection(self.player)
+        # # Check for events                                # Legacy code: Menu no longer utilizes a scrolling selection mechanism
+        # for event in pygame.event.get():
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_1:                       
+        #             self.game.move_selection(self.player)
 
     def update(self):
-        self.menu_selection1()
-        if self.game.menu_running is False:
-            self.kill()
+        # if pointer over character, relocate menu position
+        select = pygame.sprite.spritecollide(self.game.pointer, self.game.player_characters, False, collided = None)
+        if select:                  
+            self.x = (select[-1].x + 1.5 ) * TILE_SIZE          
+            self.y = (select[-1].y + .5 ) * TILE_SIZE
+
+    def draw(self):
+        # Menu displayed while pointer is hovering over player character
+        select = pygame.sprite.spritecollide(self.game.pointer, self.game.player_characters, False, collided = None)
+        if select:
+            # print(select[-1].x)
+            self.game.screen.blit(self.image, (self.x, self.y))
+            draw_text(self.image, BLACK, select[-1].class_name, 16, 10, 10)
+            draw_text(self.image, BLACK, "HP: " + str(select[-1].getHealth()), 16, 10, 30)
+            draw_text(self.image, BLACK, '1) Move', 16, 30, 50)
+            draw_text(self.image, BLACK, '2) Attack', 16, 30, 70)
 
 class Highlight_Rect(pygame.sprite.Sprite):
     def __init__(self, game, x, y):

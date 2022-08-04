@@ -11,6 +11,7 @@ import BaseGameplay
 from Settings2 import *
 from Sprites import *
 from math import sqrt
+import Classes2
 import Title
 
 class Game:
@@ -25,6 +26,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.states = {"Title": Title.Title(self), "BaseGameplay": BaseGameplay.BaseGameplay(self)}
         self.current_state = "Title"
+        self.menu = Menu(self, 50, 50)
 
     def new(self):
         # Start new game. 'Initiates' each game by creating instances of all 
@@ -32,8 +34,8 @@ class Game:
         self.menu_running = False   # TD: change hover-menu into an object(sprite?)
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.player_characters = pygame.sprite.Group()
-        self.pointer = Pointer(self, 20, 15)
-        self.player = Player_Character(self, 20, 20)
+        self.pointer = Pointer(self, 20, 18)
+        self.player = Player_Character(self, 20, 20, Classes2.Footman)
 
     def run(self):
         # Game loop 
@@ -45,30 +47,30 @@ class Game:
             self.states[self.current_state].update()
             self.states[self.current_state].draw()
 
-    def update(self):
-        # Game loop - Update
-        self.all_sprites.update() 
-        self.selection_check()  
+    # def update(self):                 Legacy code: Game class no longer updates - states and sprites update
+    #     # Game loop - Update
+    #     self.all_sprites.update() 
+    #     self.selection_check()  
 
-    def events(self):
-        # Game loop - Events
-        for event in pygame.event.get():
-            # Check for closing window
-            if event.type == pygame.QUIT:
-                if self.playing:
-                    self.playing = False
-                self.running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.running = False
-                if event.key == pygame.K_DOWN:
-                    self.pointer.move(y = 1)
-                if event.key == pygame.K_UP:
-                    self.pointer.move(y = -1)
-                if event.key == pygame.K_RIGHT:
-                    self.pointer.move(x = 1)
-                if event.key == pygame.K_LEFT:
-                    self.pointer.move(x = -1)
+    # def events(self):                Legacy code: Game class no longer seeks events - states and sprites update                         
+    #     # Game loop - Events
+    #     for event in pygame.event.get():
+    #         # Check for closing window
+    #         if event.type == pygame.QUIT:
+    #             if self.playing:
+    #                 self.playing = False
+    #             self.running = False
+    #         if event.type == pygame.KEYDOWN:
+    #             if event.key == pygame.K_ESCAPE:
+    #                 self.running = False
+    #             if event.key == pygame.K_DOWN:
+    #                 self.pointer.move(y = 1)
+    #             if event.key == pygame.K_UP:
+    #                 self.pointer.move(y = -1)
+    #             if event.key == pygame.K_RIGHT:
+    #                 self.pointer.move(x = 1)
+    #             if event.key == pygame.K_LEFT:
+    #                 self.pointer.move(x = -1)
     
     def draw(self):
         # Game loop - Draw
@@ -105,7 +107,7 @@ class Game:
         for x in range(GRID_WIDTH):
             for y in range(GRID_HEIGHT):
                 Highlight_Rect(self, x, y)
-    
+
     def menu_run(self):
         self.menu = Menu(self, self.pointer.x + 1, self.pointer.y)
         self.all_sprites.add(self.menu)
